@@ -13,7 +13,7 @@ function calcolo() {
     var doseAttuale = numeroPasticcheAttuali * dosePastiglia;
     var defaultINR = 2.5;                                                               //valore INR "normale"
     var aggINR = targetINR-defaultINR;                                                  //differenza tra INR target e INR normale
-    var compareINR = ultimoINR+aggINR;                                                  //valore di INR usato nei calcoli interni
+    var compareINR = ultimoINR-aggINR;                                                  //valore di INR usato nei calcoli interni
     var sospensione = 0;
     var settimana = 0;
     var frasario = ["","","","","","",""];
