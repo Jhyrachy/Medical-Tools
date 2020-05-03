@@ -35,29 +35,29 @@ function calcolo() {
     if(compareINR <= 1.3){
         nuovoDosaggio = percentage(1, doseAttuale, 50);
     }
-    if(compareINR === 1.4){
+    if(compareINR > 1.3 && compareINR < 1.5){
         nuovoDosaggio = percentage(1, doseAttuale, 33);
     }
-    if(compareINR >= 1.5 && compareINR <= 1.8){
+    if(compareINR >= 1.5 && compareINR < 1.9){
         nuovoDosaggio = percentage(1, doseAttuale, 25);
     }
-    if(compareINR === 1.9){
+    if(compareINR >= 1.9 && compareINR < 2){
         nuovoDosaggio = percentage(1, doseAttuale, 10);
     }
     if(compareINR >= 2 && compareINR <= 2.8){
         nuovoDosaggio = doseAttuale;
     }
-    if(compareINR >= 2.9 && compareINR <= 3.1){
+    if(compareINR > 2.8 && compareINR <= 3.1){
         nuovoDosaggio = percentage(0, doseAttuale, 10);
     }
-    if(compareINR >= 3.2 && compareINR <= 3.5){
+    if(compareINR > 3.1 && compareINR <= 3.5){
         nuovoDosaggio = percentage(0, doseAttuale, 25);
     }
-    if(compareINR >= 3.6 && compareINR <= 3.9){
+    if(compareINR > 3.5 && compareINR < 4){
         nuovoDosaggio = percentage(0, doseAttuale, 33);
         sospensione = 1;
     }
-    if(compareINR >= 4 && compareINR <= 4.4){
+    if(compareINR >= 4 && compareINR < 4.5){
         nuovoDosaggio = percentage(0, doseAttuale, 33);
         sospensione = 2;
     }
