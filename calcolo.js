@@ -16,9 +16,13 @@ function calcolo() {
     var compareINR = ultimoINR-aggINR;                                                  //valore di INR usato nei calcoli interni
     var sospensione = 0;
     var settimana = 0;
+    var tempComparazione;
     var frasario = ["","","","","","",""];
     var doseQ = [0,0,0,0,0,0,0];
     var doseI = [0,0,0,0,0,0,0];
+    var i;
+    var userPosta = 'dott.jacopopieri';
+    var domainPosta = 'gmail.com';
     
     cleanAnswer();
 
@@ -29,57 +33,14 @@ function calcolo() {
     var distribuzioneCinque     = [1,1,0,1,0,1,1];
     var distribuzioneSei        = [1,1,1,0,1,1,1];
 
-    var nuovodDosaggio;
+    var nuovoDosaggio;
 
     //calcolo variazione dosaggio
-    if(compareINR <= 1.3){
-        nuovoDosaggio = percentage(1, doseAttuale, 50);
-    }
-    if(compareINR > 1.3 && compareINR < 1.5){
-        nuovoDosaggio = percentage(1, doseAttuale, 33);
-    }
-    if(compareINR >= 1.5 && compareINR < 1.9){
-        nuovoDosaggio = percentage(1, doseAttuale, 25);
-    }
-    if(compareINR >= 1.9 && compareINR < 2){
-        nuovoDosaggio = percentage(1, doseAttuale, 10);
-    }
-    if(compareINR >= 2 && compareINR <= 2.8){
-        nuovoDosaggio = doseAttuale;
-    }
-    if(compareINR > 2.8 && compareINR <= 3.1){
-        nuovoDosaggio = percentage(0, doseAttuale, 10);
-    }
-    if(compareINR > 3.1 && compareINR <= 3.5){
-        nuovoDosaggio = percentage(0, doseAttuale, 25);
-    }
-    if(compareINR > 3.5 && compareINR < 4){
-        nuovoDosaggio = percentage(0, doseAttuale, 33);
-        sospensione = 1;
-    }
-    if(compareINR >= 4 && compareINR < 4.5){
-        nuovoDosaggio = percentage(0, doseAttuale, 33);
-        sospensione = 2;
-    }
-    if(compareINR >= 4.5 && compareINR < 6){
-        document.getElementById("terapia").innerHTML ="<span style=\"color:red;\">Assenza di emorragia</span><br>\
-                                                        Sospendere la terapia per 1-2 giorni e poi ridurre il dosaggio di warfarinf di 1,25-2.5mg e controllare INR il prima possibile <br><br><br>\
-                                                        <span style=\"color:red;\">Presenza di emorragia scarsamente significativa</span><br>\
-                                                        Sospendere la terapia e somministrare vitamina-K 0,5-1mg per OS, ricontrollare INR entro 24 ore.\
-                                                         Istruire il paziente a recarsi immediatamente in ospedale in caso di peggioramento dell'emorragia";
-        return;
-    }
-    if(compareINR >= 6 && compareINR <= 10){
-        document.getElementById("terapia").innerHTML ="In <span style=\"color:red;\">assenza di emorragia</span>, sospendere la terapia e somministrare vitamina-K 0,5-1mg per OS e ricontrollare INR dopo 24h;\
-                                                         successivamente regolarsi in base ai valori di INR";
-        return;
-    }
-    if(compareINR > 10){
-        document.getElementById("terapia").innerHTML ="<span style=\"color:red;\">Valore fuori scala</span><br>Controllare di aver inserito i valori giusti.\
-                                                         Nel caso, rivolgersi alla sede di competenza più vicina.";
-        return;
-    }
-
+    tempComparazione = comparazione(compareINR, doseAttuale);
+    
+    nuovoDosaggio = tempComparazione.toString().slice(0, tempComparazione.length-1);
+    sospensione = tempComparazione.toString().charAt( tempComparazione.length-1 );
+    
     var numeroQuarti = Math.round(nuovoDosaggio/(dosePastiglia/4));
     var doseFinale = numeroQuarti*(dosePastiglia/4);
     var numeroNuovePasticche = numeroQuarti/4;
@@ -193,16 +154,98 @@ function calcolo() {
 }
 
 function percentage(verso, valore, percentuale) {
-
+    
     if(verso === 1){
         valore += (valore/100)*percentuale;
     }
     if(verso === 0){
         valore -= (valore/100)*percentuale;
     }
+    
     return valore.toFixed(2);
 }
 
 function cleanAnswer(){
     document.getElementById("terapia").innerHTML = "";
+}
+
+function comparazione(compareINR, doseAttuale){
+
+    var nuovoDosaggio;
+    var sospensione;
+
+    if(compareINR <= 1.3){
+        nuovoDosaggio = percentage(1, doseAttuale, 50);
+        sospensione = '0';
+        return nuovoDosaggio+sospensione;
+    }
+    if(compareINR > 1.3 && compareINR < 1.5){
+        nuovoDosaggio = percentage(1, doseAttuale, 33);
+        sospensione = '0';
+        return nuovoDosaggio+sospensione;
+    }
+    if(compareINR >= 1.5 && compareINR < 1.9){
+        nuovoDosaggio = percentage(1, doseAttuale, 25);
+        sospensione = '0';
+        return nuovoDosaggio+sospensione;
+    }
+    if(compareINR >= 1.9 && compareINR < 2){
+        nuovoDosaggio = percentage(1, doseAttuale, 10);
+        sospensione = '0';
+        return nuovoDosaggio+sospensione;
+    }
+    if(compareINR >= 2 && compareINR <= 2.8){
+        nuovoDosaggio = doseAttuale;
+        sospensione = '0';
+        return nuovoDosaggio+sospensione;
+    }
+    if(compareINR > 2.8 && compareINR <= 3.1){
+        nuovoDosaggio = percentage(0, doseAttuale, 10);
+        sospensione = '0';
+        return nuovoDosaggio+sospensione;
+    }
+    if(compareINR > 3.1 && compareINR <= 3.5){
+        nuovoDosaggio = percentage(0, doseAttuale, 25);
+        sospensione = '0';
+        return nuovoDosaggio+sospensione;
+    }
+    if(compareINR > 3.5 && compareINR < 4){
+        nuovoDosaggio = percentage(0, doseAttuale, 33);
+        sospensione = 1;
+        return nuovoDosaggio+sospensione;
+    }
+    if(compareINR >= 4 && compareINR < 4.5){
+        nuovoDosaggio = percentage(0, doseAttuale, 33);
+        sospensione = 2;
+        return nuovoDosaggio+sospensione;
+    }
+    if(compareINR >= 4.5 && compareINR < 6){
+        document.getElementById("terapia").innerHTML ="<div class=\"mb-3 ml-3\">\
+                                                        <span style=\"color:red;\">Assenza di emorragia</span><br>\
+                                                        Sospendere la terapia per 1-2 giorni e poi ridurre il dosaggio di warfarinf di 1,25-2.5mg e controllare INR il prima possibile <br><br><br>\
+                                                        <span style=\"color:red;\">Presenza di emorragia scarsamente significativa</span><br>\
+                                                        Sospendere la terapia e somministrare vitamina-K 0,5-1mg per OS, ricontrollare INR entro 24 ore.\
+                                                         Istruire il paziente a recarsi immediatamente in ospedale in caso di peggioramento dell'emorragia";
+        return;
+    }
+    if(compareINR >= 6 && compareINR <= 10){
+        document.getElementById("terapia").innerHTML ="<div class=\"mb-3 ml-3\">\
+                                                        In <span style=\"color:red;\">assenza di emorragia</span>, sospendere la terapia e somministrare vitamina-K 0,5-1mg per OS e ricontrollare INR dopo 24h;\
+                                                         successivamente regolarsi in base ai valori di INR";
+        return;
+    }
+    if(compareINR > 10){
+        document.getElementById("terapia").innerHTML ="<div class=\"mb-3 ml-3\">\
+                                                        <span style=\"color:red;\">Valore fuori scala</span><br>Controllare di aver inserito i valori giusti.\
+                                                         Nel caso, rivolgersi alla sede di competenza più vicina.";
+        return;
+    } else {
+                document.getElementById("terapia").innerHTML ="<div class=\"mb-3 ml-3\">\
+                                                        <span style=\"color:red;\">ERRORE NELL'INPUT</span><br>Si è verificato un problema a processare i valori inseriti.<br>\
+                                                         Per favore inviate una mail a <b><a href=\"mailto:'" + userPosta + "&#64;" + domainPosta + '">' + 
+			                                                userPosta + "&#64;" + domainPosta + "</a></b> indicando i dati inseriti, grazie della collaborazione."
+			                                                ;
+                return;
+            }
+    
 }
