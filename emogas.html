@@ -22,7 +22,7 @@
         
             <label for="ph" class="col-sm-2 col-form-label">pH:</label>
             <div class="col-sm-10">
-                <input type="number" id="ph" class="form-control-sm" value="7.4" step=0.01 min=0><br />
+                <input type="number" id="ph" class="form-control-sm" value="7.4" step=0.01 min=0><br /><br />
             </div>
             
             <label for="po2_arteriosa" class="col-sm-2 col-form-label">PaO<sup>2</sup></label>
@@ -61,15 +61,13 @@
             </div>
         </div>
         
-        <button type="button" class="collapsible">Open Collapsible</button>
-        <div class="content">
-          <p>Lorem ipsum...</p>
-        </div> 
 
         <div class = "ml-3">
-        <button type="button" class="collapsible"><b>Parametri Avanzati</b></button>
+            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                <b>Parametri Avanzati</b><br><br />
+              </button>
         </div>
-        <div class="content">
+        <div class="collapse" id="parametri_avanzati">
             <div class="form-group row ml-5">
             
                 <label for="patm" class="col-sm-2 col-form-label">pH:</label>
