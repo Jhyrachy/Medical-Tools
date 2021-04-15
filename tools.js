@@ -276,6 +276,12 @@ function analisi() {
     var userPosta = 'dott.jacopopieri';
     var domainPosta = 'gmail.com';
 
+    //Variabili dei parametri
+    var co2_max = 42;
+    var co2_min = 38;
+    var hco3_max = 26;
+    var hco3_min = 24;
+
     //Variabili dei risultati
     var ipossia = 0;
     var grav_horowitz = 0;
@@ -283,7 +289,8 @@ function analisi() {
     var stato_acido = 1;                    //0 acido, 1 neutro, 2 basico
     var scompenso_co2 = 1                   //0 = bassa, 1 = normale, 2 alta
     var scompenso_hco3 = 1                   //0 = bassa, 1 = normale, 2 alta
-    var disturbo;
+    var disturbo_hco3;
+    var disturbo_co2;
     
     cleanAnswer();
 
@@ -306,29 +313,37 @@ function analisi() {
     //2) Studio del pH
     if(ph > 7.45) stato_acido = 2;                  //superiore a 7.45, siamo in ph BASICO
     if(ph < 7.35) stato_acido = 0;                  //inferiore a 7.35, siamo in ph ACIDO
-        //In caso di pH normali con alterazioni di CO2 e HCO3 siamo in disturbo primario COMPENSATO
+        //In caso di pH normali con alterazioni di CO2 e HCO3 siamo in disturbo misto sovrapposto
     
     //
     //3) Analisi della PCO2
-    if(paco2 > 42) scompenso_co2 = 2;               //PaCo2 troppo alta
-    if(paco2 < 42) scompenso_co2 = 0;               //PaCo2 troppo bassa
+    if(paco2 > co2_max) scompenso_co2 = 2;               //PaCo2 troppo alta
+    if(paco2 < co2_min) scompenso_co2 = 0;               //PaCo2 troppo bassa
 
     //Studio concordanza CO2
-    if(stato_acido === 0 && scompenso_co2 === 0) disturbo = "Acidosi metabolica con compenso respiratorio";             //Concordanza con pH ridotto è acidosi metabolica con compenso respiratorio
-    if(stato_acido === 2 && scompenso_co2 === 2) disturbo = "Alcalosi metabolica con compenso respiratorio";            //Concordanza con pH aumentato è alcalosi metabolica con compenso respiratorio
-    if(stato_acido === 0 && scompenso_co2 === 2) disturbo = "Acidosi respiratoria";                                     //Discordanza con pH ridotto è acidosi respiratoria
-    if(stato_acido === 2 && scompenso_co2 === 0) disturbo = "Alcalosi respiratoria";                                    //Discordanza con pH aumentato è alcalosi respiratoria
+    if(stato_acido === 0 && scompenso_co2 === 0) disturbo_co2 = "Acidosi metabolica"; //aggiungere in output  con compenso respiratorio      //Concordanza con pH ridotto è acidosi metabolica con compenso respiratorio
+    if(stato_acido === 2 && scompenso_co2 === 2) disturbo_co2 = "Alcalosi metabolica"; //aggiungere in output  con compenso respiratorio             //Concordanza con pH aumentato è alcalosi metabolica con compenso respiratorio
+    if(stato_acido === 0 && scompenso_co2 === 2) disturbo_co2 = "Acidosi respiratoria";                                     //Discordanza con pH ridotto è acidosi respiratoria
+    if(stato_acido === 2 && scompenso_co2 === 0) disturbo_co2 = "Alcalosi respiratoria";                                    //Discordanza con pH aumentato è alcalosi respiratoria
 
     //
     //4) Analisi dei bicarbonati
-    if(hco3 > 26) scompenso_hco3 = 2;               //PaCo2 troppo alta
-    if(hco3 < 24) scompenso_hco3 = 0;               //PaCo2 troppo bassa
+    if(hco3 > hco3_max) scompenso_hco3 = 2;               //PaCo2 troppo alta
+    if(hco3 < hco3_min) scompenso_hco3 = 0;               //PaCo2 troppo bassa
 
     //Studio concordanza HCO3
-    if(stato_acido === 0 && scompenso_hco3 === 0) disturbo = "Acidosi metabolica";                                                  //Concordanza con pH ridotto è acidosi metabolica
-    if(stato_acido === 2 && scompenso_hco3 === 2) disturbo = "Alcalosi metabolica";                                                 //Concordanza con pH aumentato è alcalosi metabolica
-    if(stato_acido === 0 && scompenso_hco3 === 2) disturbo = "Acidosi respiratoria con compenso metabolico secondario";             //Discordanza con pH ridotto è acidosi respiratoria con compenso metabolico secondario
-    if(stato_acido === 2 && scompenso_hco3 === 0) disturbo = "Alcalosi respiratoria con compenso metabolico secondario";            //Discordanza con pH aumentato è alcalosi respiratoria con compenso metabolico secondario
+    if(stato_acido === 0 && scompenso_hco3 === 0) disturbo_hco3 = "Acidosi metabolica";                                                  //Concordanza con pH ridotto è acidosi metabolica
+    if(stato_acido === 2 && scompenso_hco3 === 2) disturbo_hco3 = "Alcalosi metabolica";                                                 //Concordanza con pH aumentato è alcalosi metabolica
+    if(stato_acido === 0 && scompenso_hco3 === 2) disturbo_hco3 = "Acidosi respiratoria"; //Aggiungere  con compenso metabolico secondario            //Discordanza con pH ridotto è acidosi respiratoria con compenso metabolico secondario
+    if(stato_acido === 2 && scompenso_hco3 === 0) disturbo_hco3 = "Alcalosi respiratoria"; //Aggiungere con compenso metabolico secondario           //Discordanza con pH aumentato è alcalosi respiratoria con compenso metabolico secondario
+
+    //
+    //5) Calcolo compenso atteso
+    //Calcolo di un quadro respiratorio acuto
+    //Acidosi
+    if(disturbo_co2)
+
+
 
     document.getElementById("risultato").innerHTML =  "<div class=\"mb-3 ml-3\">\
                                                     <span style=\"color:red;\">Nuovo Dosaggio Settimanale:</span> " +  doseFinale + " mg\
@@ -344,3 +359,46 @@ function analisi() {
                                                     <span style=\"color:gray;\">Sabato: " + frasario[5] + "</span><br>\
                                                     Domenica: " + frasario[6] + "<div>";
 }
+
+function calcolatore_compenso(disturbo, co2, hco3, condizione){
+    //Variabili dei parametri
+    var co2_normale = 40;
+    var hco3_normale = 25;
+
+    //parametri di output
+    var compenso_atteso;
+
+    switch(disturbo){
+        case "Acidosi respiratoria":
+            if(condizione === "acuto") compenso_atteso = ((co2-co2_normale)/10)*1;          //Ogni 10 di co2 extra, aumento di 1 l'HCO3-
+            if(condizione === "cronico") compenso_atteso = ((co2-co2_normale)/10)*3.5;      //Ogni 10 di co2 extra, aumento di 3.5 l'HCO3-
+            if( (hco3_normale+compenso_atteso) >= hco3) return "Paziente compensato";
+            if( (hco3_normale+compenso_atteso) < hco3) return "Paziente scompensato";
+            break;
+
+        case "Alcalosi respiratoria":
+            if(condizione === "acuto") compenso_atteso = ((co2_normale-co2)/10)*2;          //Ogni 10 di co2 in meno, cala di 2 l'HCO3-
+            if(condizione === "cronico") compenso_atteso = ((co2_normale-co2)/10)*4;        //Ogni 10 di co2 in meno, cala di 4 l'HCO3-
+            if( (hco3_normale-compenso_atteso) <= hco3) return "Paziente compensato";
+            if( (hco3_normale-compenso_atteso) > hco3) return "Paziente scompensato";
+            break;
+
+        case "Acidosi Metabolica":
+            compenso_atteso = (hco3_normale-hco3)*1.2;          //Ogni 1 di hco3 in meno, cala di 1.2 la CO2
+            if( (co2_normale-compenso_atteso) <= co2) return "Paziente compensato";
+            if( (co2_normale-compenso_atteso) > co2) return "Paziente scompensato";
+            break;
+        
+        case "Alcalosi Metabolica":
+            compenso_atteso = (co2_normale-co2)*0.5;          //Ogni 1 di hco3 in più, aumenta di 0.5 la CO2
+            if( (co2_normale+compenso_atteso) >= co2) return "Paziente compensato";
+            if( (co2_normale+compenso_atteso) < co2) return "Paziente scompensato";
+            break;
+    
+    }
+}
+
+
+
+var delta_paco2 = paco2-co2_max;
+    var compenso_hco3 = Math.trunc(delta_paco2/10)*1;
