@@ -290,8 +290,8 @@ function analisi() {
     let stato_acido = 1;                    //0 acido, 1 neutro, 2 basico
     let scompenso_co2 = 1                   //0 = bassa, 1 = normale, 2 alta
     let scompenso_hco3 = 1                   //0 = bassa, 1 = normale, 2 alta
-    let disturbo_hco3 = ".";
-    let disturbo_co2 =  ".";
+    let disturbo_hco3;
+    let disturbo_co2;
     
     cleanAnswer();
 
@@ -301,7 +301,7 @@ function analisi() {
     //Se PaO2 è inferiore agli 80mmHg, siamo in ipossia.
     if(po2_arteriosa < 80) ipossia = 1;
 
-    //Studio del Morowitz (P/F)
+    //Studio del Horowitz (P/F)
     if(morowitz < 450) grav_horowitz = 1;               //Maggiore di 450 è normale
     if(morowitz < 300) grav_horowitz = 2;               //tra 450 e 300 è alterazione live, sotto i 300 è grave.
 
@@ -322,10 +322,14 @@ function analisi() {
     if(paco2 < co2_min) scompenso_co2 = 0;               //PaCo2 troppo bassa
 
     //Studio concordanza CO2
+    disturbo_co2 = studio_concordanza(stato_acido, scompenso_co2);
+
+    /*
     if(stato_acido === 0 && scompenso_co2 === 0) disturbo_co2 = "Acidosi metabolica"; //aggiungere in output  con compenso respiratorio      //Concordanza con pH ridotto è acidosi metabolica con compenso respiratorio
     if(stato_acido === 2 && scompenso_co2 === 2) disturbo_co2 = "Alcalosi metabolica"; //aggiungere in output  con compenso respiratorio             //Concordanza con pH aumentato è alcalosi metabolica con compenso respiratorio
     if(stato_acido === 0 && scompenso_co2 === 2) disturbo_co2 = "Acidosi respiratoria";                                     //Discordanza con pH ridotto è acidosi respiratoria
     if(stato_acido === 2 && scompenso_co2 === 0) disturbo_co2 = "Alcalosi respiratoria";                                    //Discordanza con pH aumentato è alcalosi respiratoria
+    */
 
     //
     //4) Analisi dei bicarbonati
@@ -333,19 +337,21 @@ function analisi() {
     if(hco3 < hco3_min) scompenso_hco3 = 0;               //PaCo2 troppo bassa
 
     //Studio concordanza HCO3
+    disturbo_hco3 = studio_concordanza(stato_acido, scompenso_hco3);
+    /*
     if(stato_acido === 0 && scompenso_hco3 === 0) disturbo_hco3 = "Acidosi metabolica";                                                  //Concordanza con pH ridotto è acidosi metabolica
     if(stato_acido === 2 && scompenso_hco3 === 2) disturbo_hco3 = "Alcalosi metabolica";                                                 //Concordanza con pH aumentato è alcalosi metabolica
     if(stato_acido === 0 && scompenso_hco3 === 2) disturbo_hco3 = "Acidosi respiratoria"; //Aggiungere  con compenso metabolico secondario            //Discordanza con pH ridotto è acidosi respiratoria con compenso metabolico secondario
     if(stato_acido === 2 && scompenso_hco3 === 0) disturbo_hco3 = "Alcalosi respiratoria"; //Aggiungere con compenso metabolico secondario           //Discordanza con pH aumentato è alcalosi respiratoria con compenso metabolico secondario
+    */
 
     //
     //5) Calcolo compenso atteso
-    if(disturbo_co2 !== ".") 
-    {
+    if(disturbo_co2 !== undefined){
         let cronico_respiratorio_co2 = calcolatore_compenso(disturbo_co2, paco2, hco3);
     }
 
-    if(disturbo_hco3 !== "."){
+    if(disturbo_hco3 !== undefined){
         let cronico_respiratorio_hco3 = calcolatore_compenso(disturbo_hco3, paco2, hco3);
     }
 
@@ -421,4 +427,23 @@ function calcolatore_compenso(disturbo, co2, hco3){
             break;
     
     }
+}
+
+function studio_concordanza(stato_acido, disturbo){
+    var first;
+    var second;
+
+    if(stato_acido === 2){
+        first = "Alcalosi";
+    }else{
+        first = "Acidosi";
+    }
+
+    if(stato_acido === disturbo){
+        second = "Metabolica";
+    }else{
+        second = "Respiratoria";
+    }
+     
+    return first + " " + second;
 }
