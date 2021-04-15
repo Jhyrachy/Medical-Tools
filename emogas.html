@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Analisi Emogas</title>
+    <meta name="author" content="Dr Jacopo Pieri">
+    <meta name="description" content="Programma per l'analisi rapida di un Emogas">
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script type = "text/javascript" src = "calcoloEmogas.js" ></script>
+</head>
+
+<body>
+
+    <form>
+      <div class = "ml-3">
+        <text><b>Parametri Emogas</b></text><br><br>
+      </div>
+      <div class="form-group row ml-5">
+        
+        <label for="pH" class="col-sm-2 col-form-label">pH:</label>
+        <div class="col-sm-10">
+          <input type="number" id="pH" class="form-control-sm" value="7.4" step=0.01 min=0><br />
+        </div>
+        
+        <label for="PaCo2" class="col-sm-2 col-form-label">PaCO<sup>2</sup></label>
+        <div class="col-sm-10">
+          <input type="number" id="PaCo2" class="form-control-sm" value="40" step=1 min=0><br><br />
+        </div>
+        
+      </div>
+      
+      <div class = "ml-3">
+        <text><b>Terapia Settimanale Attuale</b> (in compresse da 5 mg)</text><br><br>
+      </div>
+        
+      <div class="form-group row ml-5 mb-5">
+      
+        <label for="dose1" class="col-sm-2 col-form-label">Lunedì:</label>
+        <div class="col-sm-10">
+          <input type="number" id="dose1" class="form-control-sm" value="1" step=0.25 min=0><br />
+        </div>
+        
+        <label for="dose2" class="col-sm-2 col-form-label">Martedì:</label>
+        <div class="col-sm-10">
+          <input type="number" id="dose2" class="form-control-sm" value="1" step=0.25 min=0><br />
+        </div>
+        
+        <label for="dose3" class="col-sm-2 col-form-label">Mercoledì:</label>
+        <div class="col-sm-10">
+          <input type="number" id="dose3" class="form-control-sm" value="1" step=0.25 min=0><br />
+        </div>
+        
+        <label for="dose4" class="col-sm-2 col-form-label">Giovedì:</label>
+        <div class="col-sm-10">
+          <input type="number" id="dose4" class="form-control-sm" value="1" step=0.25 min=0><br />
+        </div>
+        
+        <label for="dose5" class="col-sm-2 col-form-label ">Venerdì:</label>
+        <div class="col-sm-10">
+          <input type="number" id="dose5" class="form-control-sm" value="1" step=0.25 min=0><br />
+        </div>
+        
+        <label for="dose6" class="col-sm-2 col-form-label">Sabato:</label>
+        <div class="col-sm-10">
+          <input type="number" id="dose6" class="form-control-sm" value="1" step=0.25 min=0><br />
+        </div>
+        
+        <label for="dose7" class="col-sm-2 col-form-label">Domenica:</label>
+        <div class="col-sm-10">
+          <input type="number" id="dose7" class="form-control-sm" value="1" step=0.25 min=0>
+        </div>
+
+      </div>
+
+      <div class = "ml-5 mb-5">
+        <button type="button" class="btn btn-primary" onclick="calcolo()">Calcola</button>
+      </div>
+    </form>
+    
+      <div id="terapia" class="mb-5"></div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</body>
+</html>
