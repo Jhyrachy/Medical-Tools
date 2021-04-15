@@ -289,8 +289,8 @@ function analisi() {
     var stato_acido = 1;                    //0 acido, 1 neutro, 2 basico
     var scompenso_co2 = 1                   //0 = bassa, 1 = normale, 2 alta
     var scompenso_hco3 = 1                   //0 = bassa, 1 = normale, 2 alta
-    var disturbo_hco3;
-    var disturbo_co2;
+    var disturbo_hco3 = ".";
+    var disturbo_co2 =  ".";
     
     cleanAnswer();
 
@@ -339,10 +339,13 @@ function analisi() {
 
     //
     //5) Calcolo compenso atteso
-    //Calcolo di un quadro respiratorio acuto
-    //Acidosi
-    if(disturbo_co2)
+    if(disturbo_co2 !== ".") var cronico_respiratorio_co2 = calcolatore_compenso(disturbo_co2, paco2, hco3);
 
+    if(disturbo_hco3 !== ".") var cronico_respiratorio_hco3 = calcolatore_compenso(disturbo_hco3, paco2, hco3);
+
+
+    //
+    //6) Calcolo gap anionico
 
 
     document.getElementById("risultato").innerHTML =  "<div class=\"mb-3 ml-3\">\
@@ -360,45 +363,52 @@ function analisi() {
                                                     Domenica: " + frasario[6] + "<div>";
 }
 
-function calcolatore_compenso(disturbo, co2, hco3, condizione){
+function calcolatore_compenso(disturbo, co2, hco3){
     //Variabili dei parametri
     var co2_normale = 40;
     var hco3_normale = 25;
 
     //parametri di output
     var compenso_atteso;
+    var compenso_cronico;
+    var compenso_acuto;
 
     switch(disturbo){
         case "Acidosi respiratoria":
-            if(condizione === "acuto") compenso_atteso = ((co2-co2_normale)/10)*1;          //Ogni 10 di co2 extra, aumento di 1 l'HCO3-
-            if(condizione === "cronico") compenso_atteso = ((co2-co2_normale)/10)*3.5;      //Ogni 10 di co2 extra, aumento di 3.5 l'HCO3-
-            if( (hco3_normale+compenso_atteso) >= hco3) return "Paziente compensato";
+            compenso_acuto = ((co2-co2_normale)/10)*1;          //Ogni 10 di co2 extra, aumento di 1 l'HCO3-
+            compenso_cronico = ((co2-co2_normale)/10)*3.5;      //Ogni 10 di co2 extra, aumento di 3.5 l'HCO3-
+            
             if( (hco3_normale+compenso_atteso) < hco3) return "Paziente scompensato";
+
+            if( (hco3_normale+compenso_atteso) >= hco3){
+                if(Math.abs(compenso_acuto-hco3) < Math.abs(compenso_cronico-hco3)) return "Paziente compensato con disturbo acuto";
+                if(Math.abs(compenso_acuto-hco3) > Math.abs(compenso_cronico-hco3)) return "Paziente compensato con disturbo cronico";
+            }
             break;
 
         case "Alcalosi respiratoria":
             if(condizione === "acuto") compenso_atteso = ((co2_normale-co2)/10)*2;          //Ogni 10 di co2 in meno, cala di 2 l'HCO3-
             if(condizione === "cronico") compenso_atteso = ((co2_normale-co2)/10)*4;        //Ogni 10 di co2 in meno, cala di 4 l'HCO3-
-            if( (hco3_normale-compenso_atteso) <= hco3) return "Paziente compensato";
+            
             if( (hco3_normale-compenso_atteso) > hco3) return "Paziente scompensato";
+
+            if( (hco3_normale-compenso_atteso) <= hco3){
+                if(Math.abs(compenso_acuto-hco3) < Math.abs(compenso_cronico-hco3)) return "Paziente compensato con disturbo acuto";
+                if(Math.abs(compenso_acuto-hco3) > Math.abs(compenso_cronico-hco3)) return "Paziente compensato con disturbo cronico";
+            }
             break;
 
         case "Acidosi Metabolica":
-            compenso_atteso = (hco3_normale-hco3)*1.2;          //Ogni 1 di hco3 in meno, cala di 1.2 la CO2
+            compenso_atteso = (hco3_normale-hco3)*1.2;                                      //Ogni 1 di hco3 in meno, cala di 1.2 la CO2
             if( (co2_normale-compenso_atteso) <= co2) return "Paziente compensato";
             if( (co2_normale-compenso_atteso) > co2) return "Paziente scompensato";
             break;
         
         case "Alcalosi Metabolica":
-            compenso_atteso = (co2_normale-co2)*0.5;          //Ogni 1 di hco3 in più, aumenta di 0.5 la CO2
+            compenso_atteso = (co2_normale-co2)*0.5;                                        //Ogni 1 di hco3 in più, aumenta di 0.5 la CO2
             if( (co2_normale+compenso_atteso) >= co2) return "Paziente compensato";
             if( (co2_normale+compenso_atteso) < co2) return "Paziente scompensato";
             break;
     
     }
 }
-
-
-
-var delta_paco2 = paco2-co2_max;
-    var compenso_hco3 = Math.trunc(delta_paco2/10)*1;
