@@ -340,9 +340,14 @@ function analisi() {
 
     //
     //5) Calcolo compenso atteso
-    if(disturbo_co2 !== ".") let cronico_respiratorio_co2 = calcolatore_compenso(disturbo_co2, paco2, hco3);
+    if(disturbo_co2 !== ".") 
+    {
+        let cronico_respiratorio_co2 = calcolatore_compenso(disturbo_co2, paco2, hco3);
+    }
 
-    if(disturbo_hco3 !== ".") let cronico_respiratorio_hco3 = calcolatore_compenso(disturbo_hco3, paco2, hco3);
+    if(disturbo_hco3 !== "."){
+        let cronico_respiratorio_hco3 = calcolatore_compenso(disturbo_hco3, paco2, hco3);
+    }
 
 
     //
