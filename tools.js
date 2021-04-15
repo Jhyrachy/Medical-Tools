@@ -1,39 +1,39 @@
 function calcolo() {
-    var dosePastiglia = 5;                                                              //dosaggio singola pastiglia
-    var ultimoINR = parseFloat(document.getElementById('INR').value);                   //nuovo INR
-    var targetINR = parseFloat(document.getElementById('INRtarget').value);             //INR da raggiungere
-    var dose1 = parseFloat(document.getElementById('dose1').value);                     //dose lunedì
-    var dose2 = parseFloat(document.getElementById('dose2').value);                     //dose martedì
-    var dose3 = parseFloat(document.getElementById('dose3').value);                     //dose mercoledì
-    var dose4 = parseFloat(document.getElementById('dose4').value);                     //dose giovedì
-    var dose5 = parseFloat(document.getElementById('dose5').value);                     //dose venerdì
-    var dose6 = parseFloat(document.getElementById('dose6').value);                     //dose sabato
-    var dose7 = parseFloat(document.getElementById('dose7').value);                     //dose domenica
-    var numeroPasticcheAttuali = dose1+dose2+dose3+dose4+dose5+dose6+dose7;             //dose complessiva settimanale
-    var doseAttuale = numeroPasticcheAttuali * dosePastiglia;
-    var defaultINR = 2.5;                                                               //valore INR "normale"
-    var aggINR = targetINR-defaultINR;                                                  //differenza tra INR target e INR normale
-    var compareINR = ultimoINR-aggINR;                                                  //valore di INR usato nei calcoli interni
-    var sospensione = 0;
-    var settimana = 0;
-    var tempComparazione;
-    var frasario = ["","","","","","",""];
-    var doseQ = [0,0,0,0,0,0,0];
-    var doseI = [0,0,0,0,0,0,0];
-    var i;
-    var userPosta = 'dott.jacopopieri';
-    var domainPosta = 'gmail.com';
+    let dosePastiglia = 5;                                                              //dosaggio singola pastiglia
+    let ultimoINR = parseFloat(document.getElementById('INR').value);                   //nuovo INR
+    let targetINR = parseFloat(document.getElementById('INRtarget').value);             //INR da raggiungere
+    let dose1 = parseFloat(document.getElementById('dose1').value);                     //dose lunedì
+    let dose2 = parseFloat(document.getElementById('dose2').value);                     //dose martedì
+    let dose3 = parseFloat(document.getElementById('dose3').value);                     //dose mercoledì
+    let dose4 = parseFloat(document.getElementById('dose4').value);                     //dose giovedì
+    let dose5 = parseFloat(document.getElementById('dose5').value);                     //dose venerdì
+    let dose6 = parseFloat(document.getElementById('dose6').value);                     //dose sabato
+    let dose7 = parseFloat(document.getElementById('dose7').value);                     //dose domenica
+    let numeroPasticcheAttuali = dose1+dose2+dose3+dose4+dose5+dose6+dose7;             //dose complessiva settimanale
+    let doseAttuale = numeroPasticcheAttuali * dosePastiglia;
+    let defaultINR = 2.5;                                                               //valore INR "normale"
+    let aggINR = targetINR-defaultINR;                                                  //differenza tra INR target e INR normale
+    let compareINR = ultimoINR-aggINR;                                                  //valore di INR usato nei calcoli interni
+    let sospensione = 0;
+    let settimana = 0;
+    let tempComparazione;
+    let frasario = ["","","","","","",""];
+    let doseQ = [0,0,0,0,0,0,0];
+    let doseI = [0,0,0,0,0,0,0];
+    let i;
+    let userPosta = 'dott.jacopopieri';
+    let domainPosta = 'gmail.com';
     
     cleanAnswer();
 
-    var distribuzioneUno        = [0,0,0,1,0,0,0];
-    var distribuzioneDue        = [0,1,0,0,0,1,0];
-    var distribuzioneTre        = [0,1,0,1,0,1,0];
-    var distribuzioneQuattro    = [1,0,1,0,1,0,1];
-    var distribuzioneCinque     = [1,1,0,1,0,1,1];
-    var distribuzioneSei        = [1,1,1,0,1,1,1];
+    let distribuzioneUno        = [0,0,0,1,0,0,0];
+    let distribuzioneDue        = [0,1,0,0,0,1,0];
+    let distribuzioneTre        = [0,1,0,1,0,1,0];
+    let distribuzioneQuattro    = [1,0,1,0,1,0,1];
+    let distribuzioneCinque     = [1,1,0,1,0,1,1];
+    let distribuzioneSei        = [1,1,1,0,1,1,1];
 
-    var nuovoDosaggio;
+    let nuovoDosaggio;
 
     //calcolo variazione dosaggio
     tempComparazione = comparazione(compareINR, doseAttuale);
@@ -41,9 +41,9 @@ function calcolo() {
     nuovoDosaggio = tempComparazione.toString().slice(0, tempComparazione.length-1);
     sospensione = tempComparazione.toString().charAt( tempComparazione.length-1 );
     
-    var numeroQuarti = Math.round(nuovoDosaggio/(dosePastiglia/4));
-    var doseFinale = numeroQuarti*(dosePastiglia/4);
-    var numeroNuovePasticche = numeroQuarti/4;
+    let numeroQuarti = Math.round(nuovoDosaggio/(dosePastiglia/4));
+    let doseFinale = numeroQuarti*(dosePastiglia/4);
+    let numeroNuovePasticche = numeroQuarti/4;
 
     while(numeroQuarti >= 7){
         numeroQuarti -= 7;
@@ -92,7 +92,7 @@ function calcolo() {
     }
 
     //frasario dosaggio
-    var tempDosaggio = " mg";
+    let tempDosaggio = " mg";
     switch(sospensione){
         case 1:
             tempDosaggio = tempDosaggio + ", sospendere per 1gg";
@@ -105,9 +105,9 @@ function calcolo() {
 
     //frasario distribuzione
     for(i=0; i <= 6; i++){
-        var intera = "";
-        var parziale = "";
-        var congiunzione = "";
+        let intera = "";
+        let parziale = "";
+        let congiunzione = "";
 
         if(doseI[i] > 0){
             if(doseI[i] == 1){
@@ -171,8 +171,8 @@ function cleanAnswer(){
 
 function comparazione(compareINR, doseAttuale){
 
-    var nuovoDosaggio;
-    var sospensione;
+    let nuovoDosaggio;
+    let sospensione;
 
     if(compareINR <= 1.3){
         nuovoDosaggio = percentage(1, doseAttuale, 50);
@@ -252,45 +252,46 @@ function comparazione(compareINR, doseAttuale){
 
 function analisi() {
     //Variabili importate dal modulo
-    var ph = parseFloat(document.getElementById('ph').value);                           //Valore del pH
-    var po2_arteriosa = parseFloat(document.getElementById('po2_arteriosa').value);     //Pressione O2 arteriosa
-    var paco2 = parseFloat(document.getElementById('paco2').value);                     //Pressione CO2
-    var hco3 = parseFloat(document.getElementById('hco3').value);                       //Dosaggio bicarbonato
-    var sodio = parseFloat(document.getElementById('sodio').value);                     //Dosaggio sodio
-    var potassio = parseFloat(document.getElementById('potassio').value);               //Dosaggio potassio
-    var cloro = parseFloat(document.getElementById('cloro').value);                     //Dosaggio cloro
-    var lattato = parseFloat(document.getElementById('lattato').value);                 //Dosaggio lattato
-    var anni = parseFloat(document.getElementById('anni').value);                       //Anni del paziente
-    var fio2 = parseFloat(document.getElementById('fio2').value);                       //Percentuale di ossigeno nel gas inspirato
-    var patm = parseFloat(document.getElementById('patm').value);                       //Pressione atmosferica
-    var ph2o = parseFloat(document.getElementById('ph2o').value);                       //Pressione Parziale Acqua
-    var quoziente_respiratorio = parseFloat(document.getElementById('quoziente_respiratorio').value);                 //Rapporto produzione CO2 su consumo O2
+    let ph = parseFloat(document.getElementById('ph').value);                           //Valore del pH
+    let po2_arteriosa = parseFloat(document.getElementById('po2_arteriosa').value);     //Pressione O2 arteriosa
+    let paco2 = parseFloat(document.getElementById('paco2').value);                     //Pressione CO2
+    let hco3 = parseFloat(document.getElementById('hco3').value);                       //Dosaggio bicarbonato
+    let sodio = parseFloat(document.getElementById('sodio').value);                     //Dosaggio sodio
+    let potassio = parseFloat(document.getElementById('potassio').value);               //Dosaggio potassio
+    let cloro = parseFloat(document.getElementById('cloro').value);                     //Dosaggio cloro
+    let lattato = parseFloat(document.getElementById('lattato').value);                 //Dosaggio lattato
+    let anni = parseFloat(document.getElementById('anni').value);                       //Anni del paziente
+    let fio2 = parseFloat(document.getElementById('fio2').value);                       //Percentuale di ossigeno nel gas inspirato
+    let patm = parseFloat(document.getElementById('patm').value);                       //Pressione atmosferica
+    let ph2o = parseFloat(document.getElementById('ph2o').value);                       //Pressione Parziale Acqua
+    let quoziente_respiratorio = parseFloat(document.getElementById('quoziente_respiratorio').value);                 //Rapporto produzione CO2 su consumo O2
 
     //Variabili calcolate
-    var morowitz = po2_arteriosa/fio2;                                                  //Indice di Morowitz, rapporto tra PaO2 e FiO2. Se alterato, problemi negli scambi respiratori (ventilazione, diffusione, perfusione)
-    var po2_alveolare = fio2*(patm-ph20)-(paco2/quoziente_respiratorio);                //Pressione dell'ossigeno nell'alveolo
-    var delta_po2 = po2_alveolare - po2_arteriosa;                                      //Differenziale tra pressione O2 in aria e negli alveoli, un differenziale troppo alto indica un'alterazione svera degli scambi respiratori (es. ARDS)
-    var delta_po2_normale = (anni/4)+4;                                       //Calcolo del delta normalizzato per età (anni/4). sarebbe +-4, ma per i nostri calcoli consideriamo solo il limite superiore
+    let morowitz = po2_arteriosa/fio2;                                                  //Indice di Morowitz, rapporto tra PaO2 e FiO2. Se alterato, problemi negli scambi respiratori (ventilazione, diffusione, perfusione)
+    let po2_alveolare = fio2*(patm-ph20)-(paco2/quoziente_respiratorio);                //Pressione dell'ossigeno nell'alveolo
+    let delta_po2 = po2_alveolare - po2_arteriosa;                                      //Differenziale tra pressione O2 in aria e negli alveoli, un differenziale troppo alto indica un'alterazione svera degli scambi respiratori (es. ARDS)
+    let delta_po2_normale = (anni/4)+4;                                       //Calcolo del delta normalizzato per età (anni/4). sarebbe +-4, ma per i nostri calcoli consideriamo solo il limite superiore
 
     //Variabili di contatto
-    var userPosta = 'dott.jacopopieri';
-    var domainPosta = 'gmail.com';
+    let userPosta = 'dott.jacopopieri';
+    let domainPosta = 'gmail.com';
 
     //Variabili dei parametri
-    var co2_max = 42;
-    var co2_min = 38;
-    var hco3_max = 26;
-    var hco3_min = 24;
+    let co2_max = 42;
+    let co2_min = 38;
+    let hco3_max = 26;
+    let hco3_min = 24;
+    let anion_gap_normale = 15;
 
     //Variabili dei risultati
-    var ipossia = 0;
-    var grav_horowitz = 0;
-    var scompenso_delta_po2 = 0;
-    var stato_acido = 1;                    //0 acido, 1 neutro, 2 basico
-    var scompenso_co2 = 1                   //0 = bassa, 1 = normale, 2 alta
-    var scompenso_hco3 = 1                   //0 = bassa, 1 = normale, 2 alta
-    var disturbo_hco3 = ".";
-    var disturbo_co2 =  ".";
+    let ipossia = 0;
+    let grav_horowitz = 0;
+    let scompenso_delta_po2 = 0;
+    let stato_acido = 1;                    //0 acido, 1 neutro, 2 basico
+    let scompenso_co2 = 1                   //0 = bassa, 1 = normale, 2 alta
+    let scompenso_hco3 = 1                   //0 = bassa, 1 = normale, 2 alta
+    let disturbo_hco3 = ".";
+    let disturbo_co2 =  ".";
     
     cleanAnswer();
 
@@ -339,13 +340,17 @@ function analisi() {
 
     //
     //5) Calcolo compenso atteso
-    if(disturbo_co2 !== ".") var cronico_respiratorio_co2 = calcolatore_compenso(disturbo_co2, paco2, hco3);
+    if(disturbo_co2 !== ".") let cronico_respiratorio_co2 = calcolatore_compenso(disturbo_co2, paco2, hco3);
 
-    if(disturbo_hco3 !== ".") var cronico_respiratorio_hco3 = calcolatore_compenso(disturbo_hco3, paco2, hco3);
+    if(disturbo_hco3 !== ".") let cronico_respiratorio_hco3 = calcolatore_compenso(disturbo_hco3, paco2, hco3);
 
 
     //
-    //6) Calcolo gap anionico
+    //6) Calcolo gap anionico se acidosi metabolica
+    if(disturbo_co2 === "Acidosi metabolica" || disturbo_hco3 === "Acidosi metabolica" ){
+        let anion_gap;
+        anion_gap = (sodio+potassio)-(cloro+hco3);
+    }
 
 
     document.getElementById("risultato").innerHTML =  "<div class=\"mb-3 ml-3\">\
@@ -365,13 +370,13 @@ function analisi() {
 
 function calcolatore_compenso(disturbo, co2, hco3){
     //Variabili dei parametri
-    var co2_normale = 40;
-    var hco3_normale = 25;
+    let co2_normale = 40;
+    let hco3_normale = 25;
 
     //parametri di output
-    var compenso_atteso;
-    var compenso_cronico;
-    var compenso_acuto;
+    let compenso_atteso;
+    let compenso_cronico;
+    let compenso_acuto;
 
     switch(disturbo){
         case "Acidosi respiratoria":
