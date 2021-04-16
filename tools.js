@@ -24,7 +24,7 @@ function calcolo() {
     let userPosta = 'dott.jacopopieri';
     let domainPosta = 'gmail.com';
     
-    cleanAnswer();
+    document.getElementById("terapia").innerHTML = "";      //Pulisci risposta precedente
 
     let distribuzioneUno        = [0,0,0,1,0,0,0];
     let distribuzioneDue        = [0,1,0,0,0,1,0];
@@ -165,10 +165,6 @@ function percentage(verso, valore, percentuale) {
     return valore.toFixed(2);
 }
 
-function cleanAnswer(){
-    document.getElementById("terapia").innerHTML = "";
-}
-
 function comparazione(compareINR, doseAttuale){
 
     let nuovoDosaggio;
@@ -267,14 +263,10 @@ function analisi() {
     let quoziente_respiratorio = parseFloat(document.getElementById('quoziente_respiratorio').value);                 //Rapporto produzione CO2 su consumo O2
 
     //Variabili calcolate
-    let morowitz = po2_arteriosa/fio2;                                                  //Indice di Morowitz, rapporto tra PaO2 e FiO2. Se alterato, problemi negli scambi respiratori (ventilazione, diffusione, perfusione)
-    let po2_alveolare = fio2*(patm-ph20)-(paco2/quoziente_respiratorio);                //Pressione dell'ossigeno nell'alveolo
+    let horowitz = po2_arteriosa/fio2;                                                  //Indice di Morowitz, rapporto tra PaO2 e FiO2. Se alterato, problemi negli scambi respiratori (ventilazione, diffusione, perfusione)
+    let po2_alveolare = fio2*(patm-ph2o)-(paco2/quoziente_respiratorio);                //Pressione dell'ossigeno nell'alveolo
     let delta_po2 = po2_alveolare - po2_arteriosa;                                      //Differenziale tra pressione O2 in aria e negli alveoli, un differenziale troppo alto indica un'alterazione svera degli scambi respiratori (es. ARDS)
     let delta_po2_normale = (anni/4)+4;                                       //Calcolo del delta normalizzato per età (anni/4). sarebbe +-4, ma per i nostri calcoli consideriamo solo il limite superiore
-
-    //Variabili di contatto
-    let userPosta = 'dott.jacopopieri';
-    let domainPosta = 'gmail.com';
 
     //Variabili dei parametri
     let co2_max = 42;
@@ -284,8 +276,8 @@ function analisi() {
     let anion_gap_normale = 15;
 
     //Variabili dei risultati
-    let ipossia = 0;
-    let grav_horowitz = 0;
+    let ipossia = false;
+    let grav_horowitz = 1;
     let scompenso_delta_po2 = 0;
     let stato_acido = 1;                    //0 acido, 1 neutro, 2 basico
     let scompenso_co2 = 1                   //0 = bassa, 1 = normale, 2 alta
@@ -293,17 +285,17 @@ function analisi() {
     let disturbo_hco3;
     let disturbo_co2;
     
-    cleanAnswer();
+    document.getElementById("risultato").innerHTML = "";  //Pulisci risposta precedente
 
     //Step di risoluzione di un emogas
     //1) Valutazione ossigenazione
     
     //Se PaO2 è inferiore agli 80mmHg, siamo in ipossia.
-    if(po2_arteriosa < 80) ipossia = 1;
+    if(po2_arteriosa < 80) ipossia = true;
 
     //Studio del Horowitz (P/F)
-    if(morowitz < 450) grav_horowitz = 1;               //Maggiore di 450 è normale
-    if(morowitz < 300) grav_horowitz = 2;               //tra 450 e 300 è alterazione live, sotto i 300 è grave.
+    if(horowitz > 450) grav_horowitz = 0;               //Maggiore di 450 è normale
+    if(horowitz < 300) grav_horowitz = 2;               //tra 450 e 300 è alterazione live, sotto i 300 è grave.
 
     //Studio Gradiente alveolo-arterioso
     if(delta_po2 > delta_po2_normale) scompenso_delta_po2 = 1;  //Se il delta è maggiore del calcolato, è scompenso lieve
@@ -324,34 +316,21 @@ function analisi() {
     //Studio concordanza CO2
     disturbo_co2 = studio_concordanza(stato_acido, scompenso_co2);
 
-    /*
-    if(stato_acido === 0 && scompenso_co2 === 0) disturbo_co2 = "Acidosi metabolica"; //aggiungere in output  con compenso respiratorio      //Concordanza con pH ridotto è acidosi metabolica con compenso respiratorio
-    if(stato_acido === 2 && scompenso_co2 === 2) disturbo_co2 = "Alcalosi metabolica"; //aggiungere in output  con compenso respiratorio             //Concordanza con pH aumentato è alcalosi metabolica con compenso respiratorio
-    if(stato_acido === 0 && scompenso_co2 === 2) disturbo_co2 = "Acidosi respiratoria";                                     //Discordanza con pH ridotto è acidosi respiratoria
-    if(stato_acido === 2 && scompenso_co2 === 0) disturbo_co2 = "Alcalosi respiratoria";                                    //Discordanza con pH aumentato è alcalosi respiratoria
-    */
-
     //
     //4) Analisi dei bicarbonati
-    if(hco3 > hco3_max) scompenso_hco3 = 2;               //PaCo2 troppo alta
-    if(hco3 < hco3_min) scompenso_hco3 = 0;               //PaCo2 troppo bassa
+    if(hco3 > hco3_max) scompenso_hco3 = 2;               //HCO3- troppo alta
+    if(hco3 < hco3_min) scompenso_hco3 = 0;               //HCO3- troppo bassa
 
     //Studio concordanza HCO3
     disturbo_hco3 = studio_concordanza(stato_acido, scompenso_hco3);
-    /*
-    if(stato_acido === 0 && scompenso_hco3 === 0) disturbo_hco3 = "Acidosi metabolica";                                                  //Concordanza con pH ridotto è acidosi metabolica
-    if(stato_acido === 2 && scompenso_hco3 === 2) disturbo_hco3 = "Alcalosi metabolica";                                                 //Concordanza con pH aumentato è alcalosi metabolica
-    if(stato_acido === 0 && scompenso_hco3 === 2) disturbo_hco3 = "Acidosi respiratoria"; //Aggiungere  con compenso metabolico secondario            //Discordanza con pH ridotto è acidosi respiratoria con compenso metabolico secondario
-    if(stato_acido === 2 && scompenso_hco3 === 0) disturbo_hco3 = "Alcalosi respiratoria"; //Aggiungere con compenso metabolico secondario           //Discordanza con pH aumentato è alcalosi respiratoria con compenso metabolico secondario
-    */
 
     //
     //5) Calcolo compenso atteso
-    if(disturbo_co2 !== undefined){
+    if(typeof disturbo_co2 !== undefined){
         let cronico_respiratorio_co2 = calcolatore_compenso(disturbo_co2, paco2, hco3);
     }
 
-    if(disturbo_hco3 !== undefined){
+    if(typeof disturbo_hco3 !== undefined){
         let cronico_respiratorio_hco3 = calcolatore_compenso(disturbo_hco3, paco2, hco3);
     }
 
@@ -364,19 +343,43 @@ function analisi() {
     }
 
 
-    document.getElementById("risultato").innerHTML =  "<div class=\"mb-3 ml-3\">\
-                                                    <span style=\"color:red;\">Nuovo Dosaggio Settimanale:</span> " +  doseFinale + " mg\
-                                                    - ( " + numeroNuovePasticche + " compresse settimanali)" + "<br>\
-                                                    <span style=\"color:gray;\">Dosaggio Precedente: " +  doseAttuale + " mg\
-                                                    - ( " + numeroPasticcheAttuali + " compresse settimanali) </div>\
-                                                    <div class=\"ml-5\"> \
-                                                    " + "Lunedì: " + frasario[0] + "<br>\
-                                                    <span style=\"color:gray;\">Martedì: " + frasario[1] + "</span><br>\
-                                                    Mercoledì: " + frasario[2] + "<br>\
-                                                    <span style=\"color:gray;\">Giovedì: " + frasario[3] + "</span><br>\
-                                                    Venerdì: " + frasario[4] + "<br>\
-                                                    <span style=\"color:gray;\">Sabato: " + frasario[5] + "</span><br>\
-                                                    Domenica: " + frasario[6] + "<div>";
+    //Inizio Formattazione parametri per output
+    //Ipossia
+    var text_ipossia = testo_ipossia(ipossia);
+    
+    //Horowitz
+    var text_horowitz = testo_horowitz(grav_horowitz);
+
+    //Delta PO2
+    var text_delta_po2 = testo_delta_po2(scompenso_delta_po2);
+
+    //pH
+    var text_ph = testo_ph(stato_acido);
+
+    //Scompenso co2
+    var text_scompenso_co2 = testo_scompenso_co2(scompenso_co2);
+    
+    //Disturbo CO2
+    var text_disturbo_co2 = testo_disturbo_co2(disturbo_co2, scompenso_co2);
+
+    //Disturbo HCO3-
+    var text_disturbo_hco3 = testo_disturbo_hco3(disturbo_hco3, scompenso_hco3);
+
+    //Calcolo Compenso Atteso
+    var text_compenso_atteso = testo_compenso_atteso();
+
+
+    document.getElementById("risultato").innerHTML =    "<div class=\"mb-3 ml-3\">\
+                                                        " + text_ipossia + "<br>\
+                                                        " + text_horowitz + "<br>\
+                                                        " + text_delta_po2 + "<br>\
+                                                        " + text_ph + "<br>\
+                                                        " + text_scompenso_co2 + "<br>\
+                                                        " + text_disturbo_co2 + "\
+                                                        " + text_disturbo_hco3 + "\
+                                                        " + text_delta_po2 + "<br>\
+                                                        " + text_delta_po2 + "<br>\
+                                                        <div>";
 }
 
 function calcolatore_compenso(disturbo, co2, hco3){
@@ -433,17 +436,125 @@ function studio_concordanza(stato_acido, disturbo){
     var first;
     var second;
 
-    if(stato_acido === 2){
-        first = "Alcalosi";
-    }else{
-        first = "Acidosi";
-    }
+    if(stato_acido === 2) first = "Alcalosi";
+    if(stato_acido === 0) first = "Acidosi";
 
-    if(stato_acido === disturbo){
-        second = "Metabolica";
-    }else{
-        second = "Respiratoria";
-    }
+    if(stato_acido === disturbo && stato_acido !== 1) second = "Metabolica";
+    if(stato_acido !== disturbo && stato_acido !== 1 && disturbo !== 1) second = "Respiratoria";
      
-    return first + " " + second;
+    if(typeof first !== undefined || typeof second !== undefined) return first + " " + second;
+    return;
+}
+
+function testo_ipossia(ipossia){
+    if(ipossia){
+        return  "<u>Paziente <span style=\"color:red;\">IPOSSICO</span>.</u><br>\
+                <span style=\"color:gray;\"><small>Il pz è considerato ipossico con una PaO2 inferiore ad 80.</small></span><br>";
+    }else{
+        return  "<u>Paziente non ipossico.</u><br>\
+                <span style=\"color:gray;\"><small>Il pz è considerato ipossico con una PaO2 inferiore ad 80.</small></span><br>";
+    }
+}
+
+function testo_horowitz(grav_horowitz){
+    switch(grav_horowitz){
+        case 0:
+            return "<u>P/F (Horowitz) normale.</u><br>\
+                    <span style=\"color:gray;\"><small>È definito normale se maggiore di 450.</small></span><br>";
+        case 1:
+            return "<u>P/F (Horowitz) con alterazione <span style=\"color:red;\">lieve</span>.</u><br>\
+                    <span style=\"color:gray;\"><small>È definita alterazione lieve se compresa tra 300 e 450.</small></span><br>";
+        case 2: 
+            return "<u>P/F (Horowitz) con alterazione <span style=\"color:red;\">GRAVE</span>.</u><br>\
+                    <span style=\"color:gray;\"><small>È definita alterazione grave se inferiore a 300</small></span><br>";
+    }
+}
+
+function testo_delta_po2(scompenso_delta_po2){
+    switch(scompenso_delta_po2){
+        case 0:
+            return  "<u>Delta PO<sub>2</sub> normale.</u><br>\
+                    <span style=\"color:gray;\"><small>Normale se inferiore a quella calcolata sull'età: (anni/4)±4</small></span><br>";
+        case 1: 
+            return  "<u>Delta PO<sub>2</sub> <span style=\"color:red;\">lievemente alterato</span>.</u><br>\
+                    <span style=\"color:gray;\"><small>Alterata se superiore a quella calcolata sull'età: (anni/4)±4</small></span><br>";
+        case 2: 
+            return  "<u>Delta PO<sub>2</sub> con <span style=\"color:red;\">scompenso moderato</span>.</u><br>\
+                    <span style=\"color:gray;\"><small>Scompenso moderato con DPO<sub>2</subs> maggiore di 20</small></span><br>";
+        case 3: 
+            return  "<u>Delta PO<sub>2</sub> con <span style=\"color:red;\">scompento GRAVE</span>.</u><br>\
+                    <span style=\"color:gray;\"><small>Scompenso grave con DPO<sub>2</subs> maggiore di 50</small></span><br>";
+    }
+}
+
+function testo_ph(stato_acido){
+    switch(stato_acido){
+        case 0:
+            return  "<u>pH <span style=\"color:red;\">ACIDO</span>.</u><br>\
+                    <span style=\"color:gray;\"><small>pH acido se minore di 7.35</small></span><br>";
+        case 1: 
+            return  "<u>pH neutro.</u><br>\
+                    <span style=\"color:gray;\"><small>pH neutro se incluso tra 7.35 e 7.45</small></span><br>";
+        case 2: 
+            return  "<u>pH <span style=\"color:red;\">BASICO</span>.</u><br>\
+                    <span style=\"color:gray;\"><small>pH basico se minore di 7.35</small></span><br>";
+    }
+}
+
+function testo_scompenso_co2(scompenso_co2){
+    switch(scompenso_co2){
+        case 0:
+            return  "<u>CO<sub>2</sub> <span style=\"color:red;\">BASSA</span>.</u><br>\
+                    <span style=\"color:gray;\"><small>Bassa se inferiore a 38</small></span><br>";
+        case 1: 
+            return  "<u>CO<sub>2</sub> normale.</u><br>\
+                    <span style=\"color:gray;\"><small>Normale se compresa tra 38 e 42</small></span><br>";
+        case 2: 
+            return  "<u>CO<sub>2</sub>  <span style=\"color:red;\">ALTA</span>.</u><br>\
+                    <span style=\"color:gray;\"><small>Alta se maggiore di 42</small></span><br>";
+    }
+}
+
+function testo_disturbo_co2(disturbo_co2, scompenso_co2){ 
+    if(typeof scompenso_co2 !== undefined ){
+        var text_disturbo_co2_fisso = "Il disturbo secondo la CO<sub>2</sub> è: ";
+    }
+    switch(disturbo_co2){
+        case "Alcalosi Metabolica":
+            return text_disturbo_co2_fisso.concat( "<span style=\"color:red;\">Alcalosi Metabolica</span> con compenso respiratorio<br>\
+                                                    <small>pH basico con concordanza dei segni (pH e CO<sub>2</sub> aumentati)</small><br><br>");
+        case "Acidosi Metabolica": 
+            return text_disturbo_co2_fisso.concat( "<span style=\"color:red;\">Acidosi Metabolica</span> con compenso respiratorio<br>\
+                                                    <small>pH acido con concordanza dei segni (pH e CO<sub>2</sub> aumentati)</small><br><br>");
+        case "Alcalosi Respiratoria": 
+            return text_disturbo_co2_fisso.concat( "<span style=\"color:red;\">Alcalosi Respiratoria</span><br>\
+                                                    <small>pH basico con discordanza dei segni (pH aumentato e CO<sub>2</sub> calata)</small><br><br>");
+        case "Alcalosi Metabolica": 
+            return text_disturbo_co2_fisso.concat( "<span style=\"color:red;\">Acidosi Respiratoria</span><br>\
+                                                    <small>pH acido con discordanza dei segni (pH calato e CO<sub>2</sub> aumentata)</small><br><br>");
+        default:
+            return "";
+    }
+}
+
+function testo_disturbo_hco3(disturbo_hco3, scompenso_hco3){
+    if(typeof scompenso_hco3 !== undefined ){
+        var text_disturbo_co2_fisso = "Il disturbo secondo la HCO<sub>3</sub><sup>-</sup> è: ";
+    }
+    switch(disturbo_hco3){
+        case "Alcalosi Metabolica":
+            return text_disturbo_co2_fisso.concat( "<span style=\"color:red;\">Alcalosi Metabolica</span> con compenso respiratorio<br>\
+                                                    <small>pH basico con concordanza dei segni (pH e CO<sub>2</sub> aumentati)</small><br><br>");
+        case "Acidosi Metabolica": 
+            return text_disturbo_co2_fisso.concat( "<span style=\"color:red;\">Acidosi Metabolica</span> con compenso respiratorio<br>\
+                                                    <small>pH acido con concordanza dei segni (pH e CO<sub>2</sub> aumentati)</small><br><br>");
+        case "Alcalosi Respiratoria": 
+            return text_disturbo_co2_fisso.concat( "<span style=\"color:red;\">Alcalosi Respiratoria</span><br>\
+                                                    <small>pH basico con discordanza dei segni (pH aumentato e CO<sub>2</sub> calata)</small><br><br>");
+        case "Alcalosi Metabolica": 
+            return text_disturbo_co2_fisso.concat( "<span style=\"color:red;\">Acidosi Respiratoria</span><br>\
+                                                    <small>pH acido con discordanza dei segni (pH calato e CO<sub>2</sub> aumentata)</small><br><br>");
+        default:
+            return "";
+    }
 }
