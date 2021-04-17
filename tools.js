@@ -574,16 +574,16 @@ function testo_disturbo_hco3(disturbo_hco3){
     let text_disturbo_co2_fisso = "<u>Il disturbo secondo HCO<sub>3</sub><sup>-</sup> è: ";
     switch(disturbo_hco3){
         case "Alcalosi Metabolica":
-            return text_disturbo_co2_fisso.concat( "<span style=\"color:red;\">Alcalosi Metabolica</span> con compenso respiratorio<br>\
+            return text_disturbo_co2_fisso.concat( "<span style=\"color:red;\">Alcalosi Metabolica</span> con compenso respiratorio</u><br>\
                                                     <span style=\"color:gray;\"><small>pH basico con concordanza dei segni (pH e CO<sub>2</sub> aumentati)</small></span><br><br>");
         case "Acidosi Metabolica": 
-            return text_disturbo_co2_fisso.concat( "<span style=\"color:red;\">Acidosi Metabolica</span> con compenso respiratorio<br>\
+            return text_disturbo_co2_fisso.concat( "<span style=\"color:red;\">Acidosi Metabolica</span> con compenso respiratorio</u><br>\
                                                     <span style=\"color:gray;\"><small>pH acido con concordanza dei segni (pH e CO<sub>2</sub> aumentati)</small></span><br><br>");
         case "Alcalosi Respiratoria": 
-            return text_disturbo_co2_fisso.concat( "<span style=\"color:red;\">Alcalosi Respiratoria</span><br>\
+            return text_disturbo_co2_fisso.concat( "<span style=\"color:red;\">Alcalosi Respiratoria</span></u><br>\
                                                     <span style=\"color:gray;\"><small>pH basico con discordanza dei segni (pH aumentato e CO<sub>2</sub> calata)</small></span><br><br>");
         case "Acidosi Respiratoria": 
-            return text_disturbo_co2_fisso.concat( "<span style=\"color:red;\">Acidosi Respiratoria</span><br>\
+            return text_disturbo_co2_fisso.concat( "<span style=\"color:red;\">Acidosi Respiratoria</span></u><br>\
                                                     <span style=\"color:gray;\"><small>pH acido con discordanza dei segni (pH calato e CO<sub>2</sub> aumentata)</small></span><br><br>");
         default:
             return "";
