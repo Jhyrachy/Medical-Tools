@@ -255,7 +255,7 @@ function analisi() {
     let sodio = parseFloat(document.getElementById('sodio').value);                     //Dosaggio sodio
     let potassio = parseFloat(document.getElementById('potassio').value);               //Dosaggio potassio
     let cloro = parseFloat(document.getElementById('cloro').value);                     //Dosaggio cloro
-    let lattato = parseFloat(document.getElementById('lattato').value);                 //Dosaggio lattato
+    //let lattato = parseFloat(document.getElementById('lattato').value);                 //Dosaggio lattato
     let anni = parseFloat(document.getElementById('anni').value);                       //Anni del paziente
     let fio2 = parseFloat(document.getElementById('fio2').value);                       //Percentuale di ossigeno nel gas inspirato
     let patm = parseFloat(document.getElementById('patm').value);                       //Pressione atmosferica
