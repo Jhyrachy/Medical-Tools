@@ -551,7 +551,7 @@ function testo_scompenso_co2(scompenso_co2){
 
 function testo_disturbo_co2(disturbo_co2){
     let text_disturbo_co2_fisso = "<u>Il disturbo secondo la CO<sub>2</sub> è: ";
-    console.log(disturbo_co2);
+    //console.log(disturbo_co2);
     switch(disturbo_co2){
         case "Alcalosi Metabolica":
             return text_disturbo_co2_fisso.concat( "<span style=\"color:red;\">Alcalosi Metabolica</span> con compenso respiratorio</u><br>\
@@ -593,6 +593,9 @@ function testo_disturbo_hco3(disturbo_hco3){
 function testo_compenso_atteso(compenso, disturbo){
     let testo_variabile;
     
+    console.log("Compenso: " + compenso);
+    console.log("Disturbo: " + disturbo);
+
     switch(compenso){
         case 0:
             testo_variabile = "scompensata";
