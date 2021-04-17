@@ -273,7 +273,8 @@ function analisi() {
     let co2_min = 38;
     let hco3_max = 26;
     let hco3_min = 24;
-    let anion_gap_normale = 15;
+    let anion_gap_min = 12;
+    let anion_gap_max = 16;
 
     //Variabili dei risultati
     let ipossia = false;
@@ -327,11 +328,11 @@ function analisi() {
     //
     //5) Calcolo compenso atteso
     if(typeof disturbo_co2 !== undefined){
-        let cronico_respiratorio_co2 = calcolatore_compenso(disturbo_co2, paco2, hco3);
+        let compenso_co2 = calcolatore_compenso(disturbo_co2, paco2, hco3);
     }
 
     if(typeof disturbo_hco3 !== undefined){
-        let cronico_respiratorio_hco3 = calcolatore_compenso(disturbo_hco3, paco2, hco3);
+        let compenso_hco3 = calcolatore_compenso(disturbo_hco3, paco2, hco3);
     }
 
 
@@ -366,8 +367,17 @@ function analisi() {
     var text_disturbo_hco3 = testo_disturbo_hco3(disturbo_hco3, scompenso_hco3);
 
     //Calcolo Compenso Atteso
-    var text_compenso_atteso = testo_compenso_atteso();
+    if(typeof disturbo_co2 !== undefined){
+        var text_compenso_atteso_co2 = testo_compenso_atteso(compenso_co2, disturbo_co2);
+    }
+    if(typeof disturbo_co2 !== undefined){
+        var text_compenso_atteso_hco3 = testo_compenso_atteso(compenso_hco3, disturbo_hco3);
+    }
 
+    //Calcolo Gap Anionico
+    if(typeof anion_gap !== undefined){
+        var text_anion_gap = testo_anion_gap(anion_gap, anion_gap_min, anion_gap_max);
+    }
 
     document.getElementById("risultato").innerHTML =    "<div class=\"mb-3 ml-3\">\
                                                         " + text_ipossia + "<br>\
@@ -377,8 +387,9 @@ function analisi() {
                                                         " + text_scompenso_co2 + "<br>\
                                                         " + text_disturbo_co2 + "\
                                                         " + text_disturbo_hco3 + "\
-                                                        " + text_delta_po2 + "<br>\
-                                                        " + text_delta_po2 + "<br>\
+                                                        " + text_compenso_atteso_co2 + "\
+                                                        " + text_compenso_atteso_hco3 + "\
+                                                        " + text_anion_gap + "\
                                                         <div>";
 }
 
@@ -397,11 +408,11 @@ function calcolatore_compenso(disturbo, co2, hco3){
             compenso_acuto = ((co2-co2_normale)/10)*1;          //Ogni 10 di co2 extra, aumento di 1 l'HCO3-
             compenso_cronico = ((co2-co2_normale)/10)*3.5;      //Ogni 10 di co2 extra, aumento di 3.5 l'HCO3-
             
-            if( (hco3_normale+compenso_atteso) < hco3) return "Paziente scompensato";
+            if( (hco3_normale+compenso_atteso) < hco3) return 0; // 0 = scompensato
 
             if( (hco3_normale+compenso_atteso) >= hco3){
-                if(Math.abs(compenso_acuto-hco3) < Math.abs(compenso_cronico-hco3)) return "Paziente compensato con disturbo acuto";
-                if(Math.abs(compenso_acuto-hco3) > Math.abs(compenso_cronico-hco3)) return "Paziente compensato con disturbo cronico";
+                if(Math.abs(compenso_acuto-hco3) < Math.abs(compenso_cronico-hco3)) return 10; // 10 compensato acuto
+                if(Math.abs(compenso_acuto-hco3) > Math.abs(compenso_cronico-hco3)) return 11; // 11 compensato cronico
             }
             break;
 
@@ -409,24 +420,24 @@ function calcolatore_compenso(disturbo, co2, hco3){
             if(condizione === "acuto") compenso_atteso = ((co2_normale-co2)/10)*2;          //Ogni 10 di co2 in meno, cala di 2 l'HCO3-
             if(condizione === "cronico") compenso_atteso = ((co2_normale-co2)/10)*4;        //Ogni 10 di co2 in meno, cala di 4 l'HCO3-
             
-            if( (hco3_normale-compenso_atteso) > hco3) return "Paziente scompensato";
+            if( (hco3_normale-compenso_atteso) > hco3) return 0; // 0 = scompensato
 
             if( (hco3_normale-compenso_atteso) <= hco3){
-                if(Math.abs(compenso_acuto-hco3) < Math.abs(compenso_cronico-hco3)) return "Paziente compensato con disturbo acuto";
-                if(Math.abs(compenso_acuto-hco3) > Math.abs(compenso_cronico-hco3)) return "Paziente compensato con disturbo cronico";
+                if(Math.abs(compenso_acuto-hco3) < Math.abs(compenso_cronico-hco3)) return 10; // 10 compensato acuto
+                if(Math.abs(compenso_acuto-hco3) > Math.abs(compenso_cronico-hco3)) return 11; // 11 compensato cronico
             }
             break;
 
         case "Acidosi Metabolica":
             compenso_atteso = (hco3_normale-hco3)*1.2;                                      //Ogni 1 di hco3 in meno, cala di 1.2 la CO2
-            if( (co2_normale-compenso_atteso) <= co2) return "Paziente compensato";
-            if( (co2_normale-compenso_atteso) > co2) return "Paziente scompensato";
+            if( (co2_normale-compenso_atteso) <= co2) return 1; //1 = compensato
+            if( (co2_normale-compenso_atteso) > co2) return 0; // 0 = scompensato
             break;
         
         case "Alcalosi Metabolica":
             compenso_atteso = (co2_normale-co2)*0.5;                                        //Ogni 1 di hco3 in più, aumenta di 0.5 la CO2
-            if( (co2_normale+compenso_atteso) >= co2) return "Paziente compensato";
-            if( (co2_normale+compenso_atteso) < co2) return "Paziente scompensato";
+            if( (co2_normale+compenso_atteso) >= co2) return 1; //1 = compensato
+            if( (co2_normale+compenso_atteso) < co2) return 0; //0 = scompensato
             break;
     
     }
@@ -556,5 +567,37 @@ function testo_disturbo_hco3(disturbo_hco3, scompenso_hco3){
                                                     <small>pH acido con discordanza dei segni (pH calato e CO<sub>2</sub> aumentata)</small><br><br>");
         default:
             return "";
+    }
+}
+
+function testo_compenso_atteso(compenso, disturbo){
+    var testo_variabile;
+    
+    switch(compenso){
+        case 0:
+            testo_variabile = "scompensata";
+            break;
+        case 1:
+            testo_variabile = "compensata";
+            break;
+        case 10:
+            testo_variabile = "compensata da evento acuto";
+            break;
+        case 11:
+            testo_variabile = "compensata da evento cronico";
+            break;
+    }
+    return "<u>" + disturbo + " è <span style=\"color:red;\">" + testo_variabile + "</span></u><br><br>";
+}
+
+function testo_anion_gap(anion_gap, anion_gap_min, anion_gap_max){
+    if(anion_gap > anion_gap_max){
+        return "<u>Gap anionico <span style=\"color:red;\">AUMENTATO</span></u><br><br>"
+    }
+    if(anion_gap < anion_gap_max){
+        return "<u>Gap anionico <span style=\"color:red;\">DIMINUITO</span></u><br><br>"
+    }
+    if(anion_gap <= anion_gap_max && anion_gap >= anion_gap_min){
+        return "<u>Gap anionico normale</u><br><br>"
     }
 }
