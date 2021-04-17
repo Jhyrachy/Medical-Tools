@@ -269,12 +269,12 @@ function analisi() {
     let delta_po2_normale = (anni/4)+4;                                       //Calcolo del delta normalizzato per età (anni/4). sarebbe +-4, ma per i nostri calcoli consideriamo solo il limite superiore
 
     //Variabili dei parametri
-    let co2_max = 42;
-    let co2_min = 38;
-    let hco3_max = 26;
-    let hco3_min = 24;
-    let anion_gap_min = 12;
-    let anion_gap_max = 16;
+    const co2_max = 42;
+    const co2_min = 38;
+    const hco3_max = 26;
+    const hco3_min = 24;
+    const anion_gap_min = 12;
+    const anion_gap_max = 16;
 
     //Variabili dei risultati
     let ipossia = false;
@@ -327,56 +327,70 @@ function analisi() {
 
     //
     //5) Calcolo compenso atteso
-    if(typeof disturbo_co2 !== undefined){
-        let compenso_co2 = calcolatore_compenso(disturbo_co2, paco2, hco3);
+    let compenso_hco3;
+    let compenso_co2;
+
+    if(typeof disturbo_co2 !== "undefined"){
+        compenso_co2 = calcolatore_compenso(disturbo_co2, paco2, hco3);
     }
 
-    if(typeof disturbo_hco3 !== undefined){
-        let compenso_hco3 = calcolatore_compenso(disturbo_hco3, paco2, hco3);
+    if(typeof disturbo_hco3 !== "undefined"){
+        compenso_hco3 = calcolatore_compenso(disturbo_hco3, paco2, hco3);
     }
 
 
     //
     //6) Calcolo gap anionico se acidosi metabolica
+    let anion_gap;
     if(disturbo_co2 === "Acidosi metabolica" || disturbo_hco3 === "Acidosi metabolica" ){
-        let anion_gap;
         anion_gap = (sodio+potassio)-(cloro+hco3);
     }
 
 
     //Inizio Formattazione parametri per output
     //Ipossia
-    var text_ipossia = testo_ipossia(ipossia);
+    let text_ipossia = testo_ipossia(ipossia);
     
     //Horowitz
-    var text_horowitz = testo_horowitz(grav_horowitz);
+    let text_horowitz = testo_horowitz(grav_horowitz);
 
     //Delta PO2
-    var text_delta_po2 = testo_delta_po2(scompenso_delta_po2);
+    let text_delta_po2 = testo_delta_po2(scompenso_delta_po2);
 
     //pH
-    var text_ph = testo_ph(stato_acido);
+    let text_ph = testo_ph(stato_acido);
 
     //Scompenso co2
-    var text_scompenso_co2 = testo_scompenso_co2(scompenso_co2);
+    let text_scompenso_co2 = testo_scompenso_co2(scompenso_co2);
     
     //Disturbo CO2
-    var text_disturbo_co2 = testo_disturbo_co2(disturbo_co2, scompenso_co2);
+    let text_disturbo_co2 = testo_disturbo_co2(disturbo_co2, scompenso_co2);
 
     //Disturbo HCO3-
-    var text_disturbo_hco3 = testo_disturbo_hco3(disturbo_hco3, scompenso_hco3);
+    let text_disturbo_hco3 = testo_disturbo_hco3(disturbo_hco3, scompenso_hco3);
 
     //Calcolo Compenso Atteso
-    if(typeof disturbo_co2 !== undefined){
-        var text_compenso_atteso_co2 = testo_compenso_atteso(compenso_co2, disturbo_co2);
+    let text_compenso_atteso_co2
+    if(typeof disturbo_co2 !== "undefined"){
+        text_compenso_atteso_co2 = testo_compenso_atteso(compenso_co2, disturbo_co2);
+    }else{
+        text_compenso_atteso_co2 = "";
     }
-    if(typeof disturbo_co2 !== undefined){
-        var text_compenso_atteso_hco3 = testo_compenso_atteso(compenso_hco3, disturbo_hco3);
+
+    let text_compenso_atteso_hco3;
+    if(typeof disturbo_co2 !== "undefined"){
+        text_compenso_atteso_hco3 = testo_compenso_atteso(compenso_hco3, disturbo_hco3);
+    }else{
+        text_compenso_atteso_hco3 = "";
     }
 
     //Calcolo Gap Anionico
-    if(typeof anion_gap !== undefined){
-        var text_anion_gap = testo_anion_gap(anion_gap, anion_gap_min, anion_gap_max);
+    console.log(anion_gap);
+    let text_anion_gap
+    if(typeof anion_gap !== "undefined"){
+        text_anion_gap = testo_anion_gap(anion_gap, anion_gap_min, anion_gap_max);
+    }else{
+        text_anion_gap = "";
     }
 
     document.getElementById("risultato").innerHTML =    "<div class=\"mb-3 ml-3\">\
@@ -444,8 +458,8 @@ function calcolatore_compenso(disturbo, co2, hco3){
 }
 
 function studio_concordanza(stato_acido, disturbo){
-    var first;
-    var second;
+    let first;
+    let second;
 
     if(stato_acido === 2) first = "Alcalosi";
     if(stato_acido === 0) first = "Acidosi";
@@ -453,7 +467,7 @@ function studio_concordanza(stato_acido, disturbo){
     if(stato_acido === disturbo && stato_acido !== 1) second = "Metabolica";
     if(stato_acido !== disturbo && stato_acido !== 1 && disturbo !== 1) second = "Respiratoria";
      
-    if(typeof first !== undefined || typeof second !== undefined) return first + " " + second;
+    if(typeof first !== "undefined" || typeof second !== "undefined") return first + " " + second;
     return;
 }
 
@@ -526,9 +540,10 @@ function testo_scompenso_co2(scompenso_co2){
     }
 }
 
-function testo_disturbo_co2(disturbo_co2, scompenso_co2){ 
-    if(typeof scompenso_co2 !== undefined ){
-        var text_disturbo_co2_fisso = "Il disturbo secondo la CO<sub>2</sub> è: ";
+function testo_disturbo_co2(disturbo_co2, scompenso_co2){
+    let text_disturbo_co2_fisso;
+    if(typeof scompenso_co2 !== "undefined" ){
+        text_disturbo_co2_fisso = "Il disturbo secondo la CO<sub>2</sub> è: ";
     }
     switch(disturbo_co2){
         case "Alcalosi Metabolica":
@@ -549,8 +564,8 @@ function testo_disturbo_co2(disturbo_co2, scompenso_co2){
 }
 
 function testo_disturbo_hco3(disturbo_hco3, scompenso_hco3){
-    if(typeof scompenso_hco3 !== undefined ){
-        var text_disturbo_co2_fisso = "Il disturbo secondo la HCO<sub>3</sub><sup>-</sup> è: ";
+    if(typeof scompenso_hco3 !== "undefined" ){
+        let text_disturbo_co2_fisso = "Il disturbo secondo la HCO<sub>3</sub><sup>-</sup> è: ";
     }
     switch(disturbo_hco3){
         case "Alcalosi Metabolica":
@@ -571,7 +586,7 @@ function testo_disturbo_hco3(disturbo_hco3, scompenso_hco3){
 }
 
 function testo_compenso_atteso(compenso, disturbo){
-    var testo_variabile;
+    let testo_variabile;
     
     switch(compenso){
         case 0:
@@ -592,12 +607,12 @@ function testo_compenso_atteso(compenso, disturbo){
 
 function testo_anion_gap(anion_gap, anion_gap_min, anion_gap_max){
     if(anion_gap > anion_gap_max){
-        return "<u>Gap anionico <span style=\"color:red;\">AUMENTATO</span></u><br><br>"
+        return "<u>Gap anionico <span style=\"color:red;\">AUMENTATO</span></u><br><br>";
     }
     if(anion_gap < anion_gap_max){
-        return "<u>Gap anionico <span style=\"color:red;\">DIMINUITO</span></u><br><br>"
+        return "<u>Gap anionico <span style=\"color:red;\">DIMINUITO</span></u><br><br>";
     }
     if(anion_gap <= anion_gap_max && anion_gap >= anion_gap_min){
-        return "<u>Gap anionico normale</u><br><br>"
+        return "<u>Gap anionico normale</u><br><br>";
     }
 }
