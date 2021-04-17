@@ -342,7 +342,7 @@ function analisi() {
     //
     //6) Calcolo gap anionico se acidosi metabolica
     let anion_gap;
-    if(disturbo_co2 === "Acidosi metabolica" || disturbo_hco3 === "Acidosi metabolica" ){
+    if(disturbo_co2 === "Acidosi Metabolica" || disturbo_hco3 === "Acidosi Metabolica" ){
         anion_gap = (sodio+potassio)-(cloro+hco3);
     }
 
@@ -550,41 +550,41 @@ function testo_scompenso_co2(scompenso_co2){
 }
 
 function testo_disturbo_co2(disturbo_co2){
-    let text_disturbo_co2_fisso = "<u>Il disturbo secondo la CO<sub>2</sub> è: ";
+    let text_disturbo_co2_fisso = "<u>Il disturbo secondo CO<sub>2</sub> è: ";
     //console.log(disturbo_co2);
     switch(disturbo_co2){
         case "Alcalosi Metabolica":
             return text_disturbo_co2_fisso.concat( "<span style=\"color:red;\">Alcalosi Metabolica</span> con compenso respiratorio</u><br>\
-                                                    <small>pH basico con concordanza dei segni (pH e CO<sub>2</sub> aumentati)</small><br><br>");
+                                                    <span style=\"color:gray;\"><small>pH basico con concordanza dei segni (pH e CO<sub>2</sub> aumentati)</span></small><br><br>");
         case "Acidosi Metabolica": 
             return text_disturbo_co2_fisso.concat( "<span style=\"color:red;\">Acidosi Metabolica</span> con compenso respiratorio</u><br>\
-                                                    <small>pH acido con concordanza dei segni (pH e CO<sub>2</sub> aumentati)</small><br><br>");
+                                                    <span style=\"color:gray;\"><small>pH acido con concordanza dei segni (pH e CO<sub>2</sub> aumentati)</span></small><br><br>");
         case "Alcalosi Respiratoria": 
             return text_disturbo_co2_fisso.concat( "<span style=\"color:red;\">Alcalosi Respiratoria</span></u><br>\
-                                                    <small>pH basico con discordanza dei segni (pH aumentato e CO<sub>2</sub> calata)</small><br><br>");
+                                                    <span style=\"color:gray;\"><small>pH basico con discordanza dei segni (pH aumentato e CO<sub>2</sub> calata)</span></small><br><br>");
         case "Acidosi Respiratoria": 
             return text_disturbo_co2_fisso.concat( "<span style=\"color:red;\">Acidosi Respiratoria</span></u><br>\
-                                                    <small>pH acido con discordanza dei segni (pH calato e CO<sub>2</sub> aumentata)</small><br><br>");
+                                                    <span style=\"color:gray;\"><small>pH acido con discordanza dei segni (pH calato e CO<sub>2</sub> aumentata)</span></small><br><br>");
         default:
             return "";
     }
 }
 
 function testo_disturbo_hco3(disturbo_hco3){
-    let text_disturbo_co2_fisso = "<u>Il disturbo secondo la HCO<sub>3</sub><sup>-</sup> è: ";
+    let text_disturbo_co2_fisso = "<u>Il disturbo secondo HCO<sub>3</sub><sup>-</sup> è: ";
     switch(disturbo_hco3){
         case "Alcalosi Metabolica":
             return text_disturbo_co2_fisso.concat( "<span style=\"color:red;\">Alcalosi Metabolica</span> con compenso respiratorio<br>\
-                                                    <small>pH basico con concordanza dei segni (pH e CO<sub>2</sub> aumentati)</small><br><br>");
+                                                    <span style=\"color:gray;\"><small>pH basico con concordanza dei segni (pH e CO<sub>2</sub> aumentati)</small></span><br><br>");
         case "Acidosi Metabolica": 
             return text_disturbo_co2_fisso.concat( "<span style=\"color:red;\">Acidosi Metabolica</span> con compenso respiratorio<br>\
-                                                    <small>pH acido con concordanza dei segni (pH e CO<sub>2</sub> aumentati)</small><br><br>");
+                                                    <span style=\"color:gray;\"><small>pH acido con concordanza dei segni (pH e CO<sub>2</sub> aumentati)</small></span><br><br>");
         case "Alcalosi Respiratoria": 
             return text_disturbo_co2_fisso.concat( "<span style=\"color:red;\">Alcalosi Respiratoria</span><br>\
-                                                    <small>pH basico con discordanza dei segni (pH aumentato e CO<sub>2</sub> calata)</small><br><br>");
+                                                    <span style=\"color:gray;\"><small>pH basico con discordanza dei segni (pH aumentato e CO<sub>2</sub> calata)</small></span><br><br>");
         case "Acidosi Respiratoria": 
             return text_disturbo_co2_fisso.concat( "<span style=\"color:red;\">Acidosi Respiratoria</span><br>\
-                                                    <small>pH acido con discordanza dei segni (pH calato e CO<sub>2</sub> aumentata)</small><br><br>");
+                                                    <span style=\"color:gray;\"><small>pH acido con discordanza dei segni (pH calato e CO<sub>2</sub> aumentata)</small></span><br><br>");
         default:
             return "";
     }
@@ -614,13 +614,15 @@ function testo_compenso_atteso(compenso, disturbo){
 }
 
 function testo_anion_gap(anion_gap, anion_gap_min, anion_gap_max){
+    let pre_text;
     if(anion_gap > anion_gap_max){
-        return "<u>Gap anionico <span style=\"color:red;\">AUMENTATO</span></u><br><br>";
+        pre_text = "<u>Gap anionico <span style=\"color:red;\">AUMENTATO</span></u><br>";
     }
     if(anion_gap < anion_gap_max){
-        return "<u>Gap anionico <span style=\"color:red;\">DIMINUITO</span></u><br><br>";
+        pre_text = "<u>Gap anionico <span style=\"color:red;\">DIMINUITO</span></u><br>";
     }
     if(anion_gap <= anion_gap_max && anion_gap >= anion_gap_min){
-        return "<u>Gap anionico normale</u><br><br>";
+        pre_text = "<u>Gap anionico normale</u><br>";
     }
+    return pre_text + "<span style=\"color:gray;\"><small>Calcolato come: (Na<sup>+</sup>+K<sup>+</sup>)-(Cl<sup>-</sup>+HCO<sub>3</sub><sup>-</sup>) incluso tra 12 e 16 </small></span><br><br>"
 }
