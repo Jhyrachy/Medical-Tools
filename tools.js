@@ -370,22 +370,30 @@ function analisi() {
     let text_disturbo_hco3 = testo_disturbo_hco3(disturbo_hco3, scompenso_hco3);
 
     //Calcolo Compenso Atteso
-    let text_compenso_atteso_co2
-    if(typeof disturbo_co2 !== "undefined"){
-        text_compenso_atteso_co2 = testo_compenso_atteso(compenso_co2, disturbo_co2);
+    let text_compenso_atteso_co2;
+    let pre_text_compenso_atteso_co2 = "<u>In base alla CO<sub>2</sub>, il disturbo è: ";
+    let post_text_compenso_atteso_co2;
+    if(typeof disturbo_co2 !== "undefined" && typeof compenso_co2 !== "undefined"){
+        post_text_compenso_atteso_co2 = testo_compenso_atteso(compenso_co2, disturbo_co2);
+        text_compenso_atteso_co2 = pre_text_compenso_atteso_co2.concat(post_text_compenso_atteso_co2);
     }else{
         text_compenso_atteso_co2 = "";
     }
 
     let text_compenso_atteso_hco3;
-    if(typeof disturbo_co2 !== "undefined"){
-        text_compenso_atteso_hco3 = testo_compenso_atteso(compenso_hco3, disturbo_hco3);
+    let pre_text_compenso_atteso_hco3 = "<u>In base alla HCO<sub>3</sub><sup>-</sup>, il disturbo è: ";
+    let post_text_compenso_atteso_hco3;
+    //console.log("Disturbo hco3: "+disturbo_hco3);
+    //console.log("Compenso hco3: "+compenso_hco3);
+    if(typeof disturbo_hco3 !== "undefined" && typeof compenso_hco3 !== "undefined"){
+        post_text_compenso_atteso_hco3 = testo_compenso_atteso(compenso_hco3, disturbo_hco3);
+        text_compenso_atteso_hco3 = pre_text_compenso_atteso_hco3.concat(post_text_compenso_atteso_hco3);
     }else{
         text_compenso_atteso_hco3 = "";
     }
 
     //Calcolo Gap Anionico
-    console.log(anion_gap);
+    //console.log(anion_gap);
     let text_anion_gap
     if(typeof anion_gap !== "undefined"){
         text_anion_gap = testo_anion_gap(anion_gap, anion_gap_min, anion_gap_max);
@@ -602,7 +610,7 @@ function testo_compenso_atteso(compenso, disturbo){
             testo_variabile = "compensata da evento cronico";
             break;
     }
-    return "<u>" + disturbo + " è <span style=\"color:red;\">" + testo_variabile + "</span></u><br><br>";
+    return disturbo + " è <span style=\"color:red;\">" + testo_variabile + "</span></u><br><br>";
 }
 
 function testo_anion_gap(anion_gap, anion_gap_min, anion_gap_max){
