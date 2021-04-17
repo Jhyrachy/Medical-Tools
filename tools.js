@@ -382,9 +382,7 @@ function analisi() {
 
     let text_compenso_atteso_hco3;
     let pre_text_compenso_atteso_hco3 = "<u>In base alla HCO<sub>3</sub><sup>-</sup>, il disturbo è: ";
-    let post_text_compenso_atteso_hco3;
-    //console.log("Disturbo hco3: "+disturbo_hco3);
-    //console.log("Compenso hco3: "+compenso_hco3);
+    let post_text_compenso_atteso_hco3;;
     if(typeof disturbo_hco3 !== "undefined" && typeof compenso_hco3 !== "undefined"){
         post_text_compenso_atteso_hco3 = testo_compenso_atteso(compenso_hco3, disturbo_hco3);
         text_compenso_atteso_hco3 = pre_text_compenso_atteso_hco3.concat(post_text_compenso_atteso_hco3);
@@ -469,12 +467,15 @@ function studio_concordanza(stato_acido, disturbo){
     let first;
     let second;
 
+    //console.log(stato_acido);
+    //console.log(disturbo);
+
     if(stato_acido === 2) first = "Alcalosi";
     if(stato_acido === 0) first = "Acidosi";
 
     if(stato_acido === disturbo && stato_acido !== 1) second = "Metabolica";
     if(stato_acido !== disturbo && stato_acido !== 1 && disturbo !== 1) second = "Respiratoria";
-     
+    //console.log(first + " " + second)
     if(typeof first !== "undefined" || typeof second !== "undefined") return first + " " + second;
     return;
 }
@@ -549,22 +550,20 @@ function testo_scompenso_co2(scompenso_co2){
 }
 
 function testo_disturbo_co2(disturbo_co2, scompenso_co2){
-    let text_disturbo_co2_fisso;
-    if(typeof scompenso_co2 !== "undefined" ){
-        text_disturbo_co2_fisso = "Il disturbo secondo la CO<sub>2</sub> è: ";
-    }
+    let text_disturbo_co2_fisso = "Il disturbo secondo la CO<sub>2</sub> è: ";
+    console.log(disturbo_co2);
     switch(disturbo_co2){
         case "Alcalosi Metabolica":
-            return text_disturbo_co2_fisso.concat( "<span style=\"color:red;\">Alcalosi Metabolica</span> con compenso respiratorio<br>\
+            return text_disturbo_co2_fisso.concat( "<u><span style=\"color:red;\">Alcalosi Metabolica</span> con compenso respiratorio</u><br>\
                                                     <small>pH basico con concordanza dei segni (pH e CO<sub>2</sub> aumentati)</small><br><br>");
         case "Acidosi Metabolica": 
-            return text_disturbo_co2_fisso.concat( "<span style=\"color:red;\">Acidosi Metabolica</span> con compenso respiratorio<br>\
+            return text_disturbo_co2_fisso.concat( "<u><span style=\"color:red;\">Acidosi Metabolica</span> con compenso respiratorio</u><br>\
                                                     <small>pH acido con concordanza dei segni (pH e CO<sub>2</sub> aumentati)</small><br><br>");
         case "Alcalosi Respiratoria": 
-            return text_disturbo_co2_fisso.concat( "<span style=\"color:red;\">Alcalosi Respiratoria</span><br>\
+            return text_disturbo_co2_fisso.concat( "<u><span style=\"color:red;\">Alcalosi Respiratoria</span></u><br>\
                                                     <small>pH basico con discordanza dei segni (pH aumentato e CO<sub>2</sub> calata)</small><br><br>");
-        case "Alcalosi Metabolica": 
-            return text_disturbo_co2_fisso.concat( "<span style=\"color:red;\">Acidosi Respiratoria</span><br>\
+        case "Acidosi Respiratoria": 
+            return text_disturbo_co2_fisso.concat( "<u><span style=\"color:red;\">Acidosi Respiratoria</span></u><br>\
                                                     <small>pH acido con discordanza dei segni (pH calato e CO<sub>2</sub> aumentata)</small><br><br>");
         default:
             return "";
